@@ -281,11 +281,11 @@ const PatientDashboard = () => {
                     <div className="flex justify-center space-x-6">
                       <div className="flex items-center">
                         <div className="w-4 h-4 bg-success rounded mr-2"></div>
-                        <span className="text-sm">Eligible (20%)</span>
+                        <span className="text-sm">Eligible (80%)</span>
                       </div>
                       <div className="flex items-center">
                         <div className="w-4 h-4 bg-warning rounded mr-2"></div>
-                        <span className="text-sm">Ineligible (80%)</span>
+                        <span className="text-sm">Ineligible (20%)</span>
                       </div>
                     </div>
                   </CardContent>
