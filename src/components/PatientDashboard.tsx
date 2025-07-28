@@ -55,27 +55,47 @@ const PatientDashboard = () => {
     diagnosis: 'Diabetes',
     reason: 'Age > 60, Medication: Aspirin'
   }];
+
   const mockCriteria = [{
     name: 'Age',
-    value: '> 60',
-    type: 'Number'
+    value: 'Min: 40.0, Max: 75.0'
   }, {
     name: 'Diagnosis',
-    value: 'Hypertension',
-    type: 'Text'
+    value: 'Hypertension'
   }, {
-    name: 'Medication',
-    value: 'Aspirin',
-    type: 'Text'
+    name: 'BMI',
+    value: 'Min: 28.0, Max: 35.0'
   }, {
-    name: 'Last Visit',
-    value: '< 6 months',
-    type: 'Date'
+    name: 'HbA1c',
+    value: 'Min: 6.5, Max: 8.5'
   }, {
-    name: 'Blood Pressure',
-    value: '> 140/90',
-    type: 'Number'
+    name: 'Liver_Function_ALT_AST',
+    value: 'Max: 40.0'
   }];
+
+  const mockFailureData = [
+    { condition: 'BMI <= 35', count: 200 },
+    { condition: 'Liver_Function_ALT_AST < 40', count: 30 },
+    { condition: 'Age > 75', count: 25 },
+    { condition: 'HbA1c > 8.5', count: 15 },
+    { condition: 'BMI < 28', count: 10 },
+  ];
+
+  const mockTerminalCases = [
+    { patientId: 'P13', failedCount: 4 },
+    { patientId: 'P15', failedCount: 4 },
+    { patientId: 'P16', failedCount: 3 },
+    { patientId: 'P22', failedCount: 3 },
+    { patientId: 'P08', failedCount: 2 },
+  ];
+
+  const getFailureRowColor = (count: number) => {
+    if (count >= 150) return 'bg-red-50 border-red-200 text-red-900';
+    if (count >= 100) return 'bg-red-100 border-red-300 text-red-800';
+    if (count >= 50) return 'bg-orange-50 border-orange-200 text-orange-900';
+    if (count >= 20) return 'bg-yellow-50 border-yellow-200 text-yellow-900';
+    return 'bg-green-50 border-green-200 text-green-900';
+  };
   const renderScreen = () => {
     switch (currentScreen) {
       case 'start':
@@ -85,8 +105,9 @@ const PatientDashboard = () => {
                 <div className="mx-auto mb-6 w-20 h-20 bg-gradient-to-br from-primary to-primary-hover rounded-2xl flex items-center justify-center">
                   <Database className="w-10 h-10 text-primary-foreground" />
                 </div>
+                <h1 className="text-2xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
                 <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
-                  Patient Filtering Tool
+                  GenAI Tool
                 </CardTitle>
                 <p className="text-xl text-muted-foreground leading-relaxed">Upload the data file (.csv) and criteria file (.txt)</p>
               </CardHeader>
@@ -102,7 +123,8 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-foreground mb-2">Step 1: Upload Patient Data</h1>
+                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
+                <h2 className="text-3xl font-bold text-foreground mb-2">Step 1: Upload Patient Data</h2>
                 <p className="text-muted-foreground">Please upload your patient data as a .CSV file to begin the filtering process.</p>
               </div>
               
@@ -142,7 +164,8 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-foreground mb-2">Step 2: Upload Filtering Criteria</h1>
+                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
+                <h2 className="text-3xl font-bold text-foreground mb-2">Step 2: Upload Filtering Criteria</h2>
                 <p className="text-muted-foreground">Please upload your filtering criteria as a .TXT file to define patient eligibility.</p>
               </div>
               
@@ -182,7 +205,8 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-6xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-foreground mb-2">Step 3: Review Extracted Criteria</h1>
+                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
+                <h2 className="text-3xl font-bold text-foreground mb-2">Step 3: Review Extracted Criteria</h2>
                 <p className="text-muted-foreground">Please review the extracted criteria below. Confirm if they are correct.</p>
               </div>
               
@@ -197,18 +221,12 @@ const PatientDashboard = () => {
                         <tr className="border-b border-border">
                           <th className="text-left py-4 px-4 font-semibold">Criterion Name</th>
                           <th className="text-left py-4 px-4 font-semibold">Expected Value</th>
-                          <th className="text-left py-4 px-4 font-semibold">Data Type</th>
                         </tr>
                       </thead>
                       <tbody>
                         {mockCriteria.map((criterion, index) => <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
                             <td className="py-4 px-4 font-medium">{criterion.name}</td>
                             <td className="py-4 px-4">{criterion.value}</td>
-                            <td className="py-4 px-4">
-                              <span className="px-3 py-1 bg-secondary rounded-full text-sm font-medium">
-                                {criterion.type}
-                              </span>
-                            </td>
                           </tr>)}
                       </tbody>
                     </table>
@@ -232,7 +250,8 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-7xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-2">Patient Eligibility Dashboard</h1>
+                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
+                <h2 className="text-4xl font-bold text-foreground mb-2">Patient Eligibility Dashboard</h2>
                 <p className="text-muted-foreground text-lg">Comprehensive overview of patient filtering results</p>
               </div>
               
@@ -314,7 +333,7 @@ const PatientDashboard = () => {
               </div>
 
               {/* Eligible Patients Table */}
-              <Card className="shadow-xl border-0">
+              <Card className="shadow-xl border-0 mb-8">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-xl">Eligible Patients Details</CardTitle>
                   <Button className="bg-success hover:bg-success/90">
@@ -344,6 +363,68 @@ const PatientDashboard = () => {
                           </tr>)}
                       </tbody>
                     </table>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Failure Summary Section */}
+              <Card className="shadow-xl border-0 mb-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl">Failure Summary</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-8">
+                  {/* Criteria Failure Distribution */}
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4">Criteria failure distribution</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left py-4 px-4 font-semibold">Condition Failed</th>
+                            <th className="text-left py-4 px-4 font-semibold">Count of patients</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {mockFailureData.map((failure, index) => (
+                            <tr key={index} className={`border border-solid transition-colors ${getFailureRowColor(failure.count)}`}>
+                              <td className="py-4 px-4 font-medium">{failure.condition}</td>
+                              <td className="py-4 px-4 font-bold">{failure.count}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Terminal Cases */}
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4">Terminal Cases: Failed Conditions</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left py-4 px-4 font-semibold">Patient ID</th>
+                            <th className="text-left py-4 px-4 font-semibold">Count of criteria failed</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {mockTerminalCases.map((terminalCase, index) => (
+                            <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
+                              <td className="py-4 px-4 font-medium">{terminalCase.patientId}</td>
+                              <td className="py-4 px-4 font-bold">{terminalCase.failedCount}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Download Button */}
+                  <div className="pt-4">
+                    <Button className="bg-destructive hover:bg-destructive/90">
+                      <Download className="mr-2 w-4 h-4" />
+                      Download failures.csv
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
