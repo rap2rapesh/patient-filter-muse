@@ -2,42 +2,84 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight, Upload, Check, Download, FileText, Database } from 'lucide-react';
-
 type Screen = 'start' | 'upload-csv' | 'upload-criteria' | 'review-criteria' | 'dashboard';
-
 const PatientDashboard = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('start');
   const [csvUploaded, setCsvUploaded] = useState(false);
   const [criteriaUploaded, setCriteriaUploaded] = useState(false);
-
   const navigateToScreen = (screen: Screen) => {
     setCurrentScreen(screen);
   };
 
   // Mock data for the dashboard
-  const mockPatients = [
-    { id: 'P001', name: 'John Smith', age: 65, diagnosis: 'Hypertension', reason: 'Age > 60, Diagnosis match' },
-    { id: 'P002', name: 'Sarah Johnson', age: 72, diagnosis: 'Diabetes', reason: 'Age > 60, Medication: Aspirin' },
-    { id: 'P003', name: 'Michael Brown', age: 58, diagnosis: 'Hypertension', reason: 'Diagnosis match, Medication: Aspirin' },
-    { id: 'P004', name: 'Emily Davis', age: 67, diagnosis: 'Hypertension', reason: 'Age > 60, Diagnosis match' },
-    { id: 'P005', name: 'Robert Wilson', age: 74, diagnosis: 'Diabetes', reason: 'Age > 60, Medication: Aspirin' },
-    { id: 'P006', name: 'Lisa Anderson', age: 63, diagnosis: 'Hypertension', reason: 'Age > 60, Diagnosis match' },
-    { id: 'P007', name: 'David Miller', age: 69, diagnosis: 'Diabetes', reason: 'Age > 60, Medication: Aspirin' },
-  ];
-
-  const mockCriteria = [
-    { name: 'Age', value: '> 60', type: 'Number' },
-    { name: 'Diagnosis', value: 'Hypertension', type: 'Text' },
-    { name: 'Medication', value: 'Aspirin', type: 'Text' },
-    { name: 'Last Visit', value: '< 6 months', type: 'Date' },
-    { name: 'Blood Pressure', value: '> 140/90', type: 'Number' },
-  ];
-
+  const mockPatients = [{
+    id: 'P001',
+    name: 'John Smith',
+    age: 65,
+    diagnosis: 'Hypertension',
+    reason: 'Age > 60, Diagnosis match'
+  }, {
+    id: 'P002',
+    name: 'Sarah Johnson',
+    age: 72,
+    diagnosis: 'Diabetes',
+    reason: 'Age > 60, Medication: Aspirin'
+  }, {
+    id: 'P003',
+    name: 'Michael Brown',
+    age: 58,
+    diagnosis: 'Hypertension',
+    reason: 'Diagnosis match, Medication: Aspirin'
+  }, {
+    id: 'P004',
+    name: 'Emily Davis',
+    age: 67,
+    diagnosis: 'Hypertension',
+    reason: 'Age > 60, Diagnosis match'
+  }, {
+    id: 'P005',
+    name: 'Robert Wilson',
+    age: 74,
+    diagnosis: 'Diabetes',
+    reason: 'Age > 60, Medication: Aspirin'
+  }, {
+    id: 'P006',
+    name: 'Lisa Anderson',
+    age: 63,
+    diagnosis: 'Hypertension',
+    reason: 'Age > 60, Diagnosis match'
+  }, {
+    id: 'P007',
+    name: 'David Miller',
+    age: 69,
+    diagnosis: 'Diabetes',
+    reason: 'Age > 60, Medication: Aspirin'
+  }];
+  const mockCriteria = [{
+    name: 'Age',
+    value: '> 60',
+    type: 'Number'
+  }, {
+    name: 'Diagnosis',
+    value: 'Hypertension',
+    type: 'Text'
+  }, {
+    name: 'Medication',
+    value: 'Aspirin',
+    type: 'Text'
+  }, {
+    name: 'Last Visit',
+    value: '< 6 months',
+    type: 'Date'
+  }, {
+    name: 'Blood Pressure',
+    value: '> 140/90',
+    type: 'Number'
+  }];
   const renderScreen = () => {
     switch (currentScreen) {
       case 'start':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-background to-secondary flex items-center justify-center p-8">
+        return <div className="min-h-screen bg-gradient-to-br from-background to-secondary flex items-center justify-center p-8">
             <Card className="w-full max-w-2xl shadow-2xl border-0 bg-card/95 backdrop-blur">
               <CardHeader className="text-center pb-8">
                 <div className="mx-auto mb-6 w-20 h-20 bg-gradient-to-br from-primary to-primary-hover rounded-2xl flex items-center justify-center">
@@ -46,27 +88,20 @@ const PatientDashboard = () => {
                 <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
                   Patient Filtering Tool
                 </CardTitle>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  Upload your data and criteria to identify eligible patients with our advanced filtering system
-                </p>
+                <p className="text-xl text-muted-foreground leading-relaxed">Upload the following files:
+(1) data file (.csv)
+(2) criteria file (.txt)</p>
               </CardHeader>
               <CardContent className="text-center">
-                <Button 
-                  onClick={() => navigateToScreen('upload-csv')}
-                  size="lg"
-                  className="px-12 py-6 text-lg font-semibold bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                >
+                <Button onClick={() => navigateToScreen('upload-csv')} size="lg" className="px-12 py-6 text-lg font-semibold bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                   Get Started
                   <ArrowRight className="ml-3 w-5 h-5" />
                 </Button>
               </CardContent>
             </Card>
-          </div>
-        );
-
+          </div>;
       case 'upload-csv':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
+        return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
                 <h1 className="text-3xl font-bold text-foreground mb-2">Step 1: Upload Patient Data</h1>
@@ -80,8 +115,7 @@ const PatientDashboard = () => {
                       <FileText className="w-12 h-12 text-primary" />
                     </div>
                     
-                    <div className="mb-8 p-8 border-2 border-dashed border-border rounded-xl bg-accent/30 hover:bg-accent/50 transition-colors cursor-pointer"
-                         onClick={() => setCsvUploaded(true)}>
+                    <div className="mb-8 p-8 border-2 border-dashed border-border rounded-xl bg-accent/30 hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setCsvUploaded(true)}>
                       <Upload className="mx-auto w-8 h-8 text-muted-foreground mb-4" />
                       <Button variant="outline" size="lg" className="mb-4">
                         Upload CSV File
@@ -92,19 +126,11 @@ const PatientDashboard = () => {
                     </div>
 
                     <div className="flex justify-between">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => navigateToScreen('start')}
-                        className="px-8"
-                      >
+                      <Button variant="outline" onClick={() => navigateToScreen('start')} className="px-8">
                         <ArrowLeft className="mr-2 w-4 h-4" />
                         Back
                       </Button>
-                      <Button 
-                        onClick={() => navigateToScreen('upload-criteria')}
-                        disabled={!csvUploaded}
-                        className="px-8"
-                      >
+                      <Button onClick={() => navigateToScreen('upload-criteria')} disabled={!csvUploaded} className="px-8">
                         Next
                         <ArrowRight className="ml-2 w-4 h-4" />
                       </Button>
@@ -113,12 +139,9 @@ const PatientDashboard = () => {
                 </CardContent>
               </Card>
             </div>
-          </div>
-        );
-
+          </div>;
       case 'upload-criteria':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
+        return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
                 <h1 className="text-3xl font-bold text-foreground mb-2">Step 2: Upload Filtering Criteria</h1>
@@ -132,8 +155,7 @@ const PatientDashboard = () => {
                       <FileText className="w-12 h-12 text-primary" />
                     </div>
                     
-                    <div className="mb-8 p-8 border-2 border-dashed border-border rounded-xl bg-accent/30 hover:bg-accent/50 transition-colors cursor-pointer"
-                         onClick={() => setCriteriaUploaded(true)}>
+                    <div className="mb-8 p-8 border-2 border-dashed border-border rounded-xl bg-accent/30 hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setCriteriaUploaded(true)}>
                       <Upload className="mx-auto w-8 h-8 text-muted-foreground mb-4" />
                       <Button variant="outline" size="lg" className="mb-4">
                         Upload Criteria File
@@ -144,19 +166,11 @@ const PatientDashboard = () => {
                     </div>
 
                     <div className="flex justify-between">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => navigateToScreen('upload-csv')}
-                        className="px-8"
-                      >
+                      <Button variant="outline" onClick={() => navigateToScreen('upload-csv')} className="px-8">
                         <ArrowLeft className="mr-2 w-4 h-4" />
                         Back
                       </Button>
-                      <Button 
-                        onClick={() => navigateToScreen('review-criteria')}
-                        disabled={!criteriaUploaded}
-                        className="px-8"
-                      >
+                      <Button onClick={() => navigateToScreen('review-criteria')} disabled={!criteriaUploaded} className="px-8">
                         Next
                         <ArrowRight className="ml-2 w-4 h-4" />
                       </Button>
@@ -165,12 +179,9 @@ const PatientDashboard = () => {
                 </CardContent>
               </Card>
             </div>
-          </div>
-        );
-
+          </div>;
       case 'review-criteria':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
+        return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-6xl mx-auto">
               <div className="mb-8">
                 <h1 className="text-3xl font-bold text-foreground mb-2">Step 3: Review Extracted Criteria</h1>
@@ -192,8 +203,7 @@ const PatientDashboard = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {mockCriteria.map((criterion, index) => (
-                          <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
+                        {mockCriteria.map((criterion, index) => <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
                             <td className="py-4 px-4 font-medium">{criterion.name}</td>
                             <td className="py-4 px-4">{criterion.value}</td>
                             <td className="py-4 px-4">
@@ -201,8 +211,7 @@ const PatientDashboard = () => {
                                 {criterion.type}
                               </span>
                             </td>
-                          </tr>
-                        ))}
+                          </tr>)}
                       </tbody>
                     </table>
                   </div>
@@ -210,30 +219,19 @@ const PatientDashboard = () => {
               </Card>
 
               <div className="flex justify-between">
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigateToScreen('upload-criteria')}
-                  className="px-8"
-                >
+                <Button variant="outline" onClick={() => navigateToScreen('upload-criteria')} className="px-8">
                   <ArrowLeft className="mr-2 w-4 h-4" />
                   Back
                 </Button>
-                <Button 
-                  onClick={() => navigateToScreen('dashboard')}
-                  size="lg"
-                  className="px-12 bg-success hover:bg-success/90"
-                >
+                <Button onClick={() => navigateToScreen('dashboard')} size="lg" className="px-12 bg-success hover:bg-success/90">
                   <Check className="mr-2 w-5 h-5" />
                   CONFIRM CRITERIA
                 </Button>
               </div>
             </div>
-          </div>
-        );
-
+          </div>;
       case 'dashboard':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
+        return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-7xl mx-auto">
               <div className="mb-8">
                 <h1 className="text-4xl font-bold text-foreground mb-2">Patient Eligibility Dashboard</h1>
@@ -271,27 +269,9 @@ const PatientDashboard = () => {
                     <div className="relative w-48 h-48 mb-6">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                         {/* Eligible slice (80%) */}
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="40"
-                          fill="none"
-                          stroke="hsl(var(--success))"
-                          strokeWidth="20"
-                          strokeDasharray="201.06 251.33"
-                          strokeDashoffset="0"
-                        />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="hsl(var(--success))" strokeWidth="20" strokeDasharray="201.06 251.33" strokeDashoffset="0" />
                         {/* Ineligible slice (20%) */}
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="40"
-                          fill="none"
-                          stroke="hsl(var(--warning))"
-                          strokeWidth="20"
-                          strokeDasharray="50.27 251.33"
-                          strokeDashoffset="-201.06"
-                        />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="hsl(var(--warning))" strokeWidth="20" strokeDasharray="50.27 251.33" strokeDashoffset="-201.06" />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
@@ -357,30 +337,24 @@ const PatientDashboard = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {mockPatients.map((patient, index) => (
-                          <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
+                        {mockPatients.map((patient, index) => <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
                             <td className="py-4 px-4 font-medium">{patient.id}</td>
                             <td className="py-4 px-4">{patient.name}</td>
                             <td className="py-4 px-4">{patient.age}</td>
                             <td className="py-4 px-4">{patient.diagnosis}</td>
                             <td className="py-4 px-4 text-sm text-muted-foreground">{patient.reason}</td>
-                          </tr>
-                        ))}
+                          </tr>)}
                       </tbody>
                     </table>
                   </div>
                 </CardContent>
               </Card>
             </div>
-          </div>
-        );
-
+          </div>;
       default:
         return null;
     }
   };
-
   return <div className="font-sans">{renderScreen()}</div>;
 };
-
 export default PatientDashboard;
