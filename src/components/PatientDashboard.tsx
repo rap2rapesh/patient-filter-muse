@@ -88,9 +88,7 @@ const PatientDashboard = () => {
                 <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
                   Patient Filtering Tool
                 </CardTitle>
-                <p className="text-xl text-muted-foreground leading-relaxed">Upload the following files:
-(1) data file (.csv)
-(2) criteria file (.txt)</p>
+                <p className="text-xl text-muted-foreground leading-relaxed">Upload the data file (.csv) and criteria file (.txt)</p>
               </CardHeader>
               <CardContent className="text-center">
                 <Button onClick={() => navigateToScreen('upload-csv')} size="lg" className="px-12 py-6 text-lg font-semibold bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
