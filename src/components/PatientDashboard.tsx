@@ -1,14 +1,87 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { ArrowLeft, ArrowRight, Upload, Check, Download, FileText, Database } from 'lucide-react';
 type Screen = 'start' | 'upload-csv' | 'upload-criteria' | 'review-criteria' | 'dashboard';
+
+interface CriteriaData {
+  [key: string]: {
+    Min?: number;
+    Max?: number;
+  } | string;
+}
+
 const PatientDashboard = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('start');
   const [csvUploaded, setCsvUploaded] = useState(false);
   const [criteriaUploaded, setCriteriaUploaded] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // Original criteria data
+  const originalCriteria: CriteriaData = {
+    "Age": { "Min": 40.0, "Max": 75.0 },
+    "Diagnosis": "Hypertension",
+    "BMI": { "Min": 28.0, "Max": 35.0 },
+    "HbA1c": { "Min": 6.5, "Max": 8.5 },
+    "Liver_Function_ALT_AST": { "Max": 40.0 }
+  };
+  
+  const [editedCriteria, setEditedCriteria] = useState<CriteriaData>(originalCriteria);
+  
   const navigateToScreen = (screen: Screen) => {
     setCurrentScreen(screen);
+    if (screen === 'review-criteria') {
+      setShowWarning(false);
+      setIsEditing(false);
+    }
+  };
+
+  const formatCriteriaValue = (criterion: string, data: any): string => {
+    if (typeof data === 'string') {
+      return data;
+    }
+    const parts = [];
+    if (data.Min !== undefined) parts.push(`Min: ${data.Min}`);
+    if (data.Max !== undefined) parts.push(`Max: ${data.Max}`);
+    return parts.join(', ');
+  };
+
+  const updateCriteriaValue = (criterionName: string, field: 'Min' | 'Max' | 'value', value: string) => {
+    setEditedCriteria(prev => {
+      const newCriteria = { ...prev };
+      if (field === 'value') {
+        newCriteria[criterionName] = value;
+      } else {
+        const numValue = parseFloat(value);
+        if (!isNaN(numValue)) {
+          newCriteria[criterionName] = {
+            ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
+            [field]: numValue
+          };
+        }
+      }
+      return newCriteria;
+    });
+  };
+
+  const checkIfCriteriaChanged = (): boolean => {
+    return JSON.stringify(originalCriteria) !== JSON.stringify(editedCriteria);
+  };
+
+  const handleConfirmCriteria = () => {
+    if (checkIfCriteriaChanged()) {
+      setShowWarning(true);
+      setIsEditing(false);
+    } else {
+      navigateToScreen('dashboard');
+    }
+  };
+
+  const handleBackToEditing = () => {
+    setIsEditing(true);
+    setShowWarning(false);
   };
 
   // Mock data for the dashboard
@@ -148,7 +221,7 @@ const PatientDashboard = () => {
                     <div className="flex justify-between">
                       <Button variant="outline" onClick={() => navigateToScreen('start')} className="px-8">
                         <ArrowLeft className="mr-2 w-4 h-4" />
-                        Back
+                        Back to Landing Page
                       </Button>
                       <Button onClick={() => navigateToScreen('upload-criteria')} disabled={!csvUploaded} className="px-8">
                         Next
@@ -165,8 +238,8 @@ const PatientDashboard = () => {
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
                 <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
-                <h2 className="text-3xl font-bold text-foreground mb-2">Step 2: Upload Filtering Criteria</h2>
-                <p className="text-muted-foreground">Please upload your filtering criteria as a .TXT file to define patient eligibility.</p>
+                <h2 className="text-3xl font-bold text-foreground mb-2">Step 2: Upload Eligibility Criteria</h2>
+                <p className="text-muted-foreground">Please upload your eligibility criteria as a .TXT file to define patient eligibility.</p>
               </div>
               
               <Card className="shadow-xl border-0">
@@ -189,7 +262,7 @@ const PatientDashboard = () => {
                     <div className="flex justify-between">
                       <Button variant="outline" onClick={() => navigateToScreen('upload-csv')} className="px-8">
                         <ArrowLeft className="mr-2 w-4 h-4" />
-                        Back
+                        Back to Upload Patient Data
                       </Button>
                       <Button onClick={() => navigateToScreen('review-criteria')} disabled={!criteriaUploaded} className="px-8">
                         Next
@@ -210,39 +283,115 @@ const PatientDashboard = () => {
                 <p className="text-muted-foreground">Please review the extracted criteria below. Confirm if they are correct.</p>
               </div>
               
-              <Card className="shadow-xl border-0 mb-8">
-                <CardHeader>
-                  <CardTitle className="text-xl">Extracted Filtering Criteria</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-border">
-                          <th className="text-left py-4 px-4 font-semibold">Criterion Name</th>
-                          <th className="text-left py-4 px-4 font-semibold">Expected Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {mockCriteria.map((criterion, index) => <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
-                            <td className="py-4 px-4 font-medium">{criterion.name}</td>
-                            <td className="py-4 px-4">{criterion.value}</td>
-                          </tr>)}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
+              {!showWarning && (
+                <Card className="shadow-xl border-0 mb-8">
+                  <CardHeader>
+                    <CardTitle className="text-xl">Extracted Filtering Criteria</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left py-4 px-4 font-semibold">Criterion Name</th>
+                            <th className="text-left py-4 px-4 font-semibold">Expected Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(editedCriteria).map(([criterionName, criterionData], index) => (
+                            <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
+                              <td className="py-4 px-4 font-medium">{criterionName}</td>
+                              <td className="py-4 px-4">
+                                {typeof criterionData === 'string' ? (
+                                  <Input
+                                    value={criterionData}
+                                    onChange={(e) => updateCriteriaValue(criterionName, 'value', e.target.value)}
+                                    className="w-full"
+                                  />
+                                ) : (
+                                  <div className="flex items-center space-x-2">
+                                    {criterionData.Min !== undefined && (
+                                      <>
+                                        <span>Min:</span>
+                                        <Input
+                                          type="number"
+                                          value={criterionData.Min}
+                                          onChange={(e) => updateCriteriaValue(criterionName, 'Min', e.target.value)}
+                                          className="w-20"
+                                          step="0.1"
+                                        />
+                                      </>
+                                    )}
+                                    {criterionData.Max !== undefined && (
+                                      <>
+                                        <span>Max:</span>
+                                        <Input
+                                          type="number"
+                                          value={criterionData.Max}
+                                          onChange={(e) => updateCriteriaValue(criterionName, 'Max', e.target.value)}
+                                          className="w-20"
+                                          step="0.1"
+                                        />
+                                      </>
+                                    )}
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={() => navigateToScreen('upload-criteria')} className="px-8">
-                  <ArrowLeft className="mr-2 w-4 h-4" />
-                  Back
-                </Button>
-                <Button onClick={() => navigateToScreen('dashboard')} size="lg" className="px-12 bg-success hover:bg-success/90">
-                  <Check className="mr-2 w-5 h-5" />
-                  CONFIRM CRITERIA
-                </Button>
+              {showWarning && (
+                <Card className="shadow-xl border-0 mb-8 border-destructive">
+                  <CardContent className="p-8">
+                    <div className="text-center mb-6">
+                      <p className="text-lg font-semibold text-destructive mb-4">
+                        The edited values do not match the criteria text file
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              <div className="flex justify-between items-center">
+                <div>
+                  {showWarning && (
+                    <Button variant="outline" onClick={handleBackToEditing} className="px-8">
+                      <ArrowLeft className="mr-2 w-4 h-4" />
+                      BACK TO EDITING CRITERIA
+                    </Button>
+                  )}
+                  {!showWarning && (
+                    <Button variant="outline" onClick={() => navigateToScreen('upload-criteria')} className="px-8">
+                      <ArrowLeft className="mr-2 w-4 h-4" />
+                      Back to Upload Eligibility Criteria
+                    </Button>
+                  )}
+                </div>
+                
+                <div className="flex space-x-4">
+                  {showWarning && (
+                    <>
+                      <Button onClick={() => navigateToScreen('dashboard')} size="lg" className="px-8 bg-destructive hover:bg-destructive/90">
+                        Proceed with UPDATED criteria
+                      </Button>
+                      <Button onClick={() => { setEditedCriteria(originalCriteria); navigateToScreen('dashboard'); }} size="lg" className="px-8 bg-success hover:bg-success/90">
+                        Proceed with ORIGINAL criteria
+                      </Button>
+                    </>
+                  )}
+                  {!showWarning && (
+                    <Button onClick={handleConfirmCriteria} size="lg" className="px-12 bg-success hover:bg-success/90">
+                      <Check className="mr-2 w-5 h-5" />
+                      CONFIRM CRITERIA
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>;
@@ -310,23 +459,23 @@ const PatientDashboard = () => {
                   </CardContent>
                 </Card>
 
-                {/* Additional metrics */}
+                {/* Failure Summary Preview */}
                 <Card className="shadow-xl border-0">
                   <CardHeader>
-                    <CardTitle className="text-xl">Processing Summary</CardTitle>
+                    <CardTitle className="text-xl">Failure Summary Preview</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center p-3 bg-accent/30 rounded-lg">
-                      <span className="text-sm font-medium">Processing Time</span>
-                      <span className="text-sm font-bold">2.3 seconds</span>
+                      <span className="text-sm font-medium">Most Failed Condition</span>
+                      <span className="text-sm font-bold">BMI ≤ 35</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-accent/30 rounded-lg">
-                      <span className="text-sm font-medium">Criteria Applied</span>
-                      <span className="text-sm font-bold">5 filters</span>
+                      <span className="text-sm font-medium">Worst Terminal Case</span>
+                      <span className="text-sm font-bold">P13 (4 failures)</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-accent/30 rounded-lg">
-                      <span className="text-sm font-medium">Match Rate</span>
-                      <span className="text-sm font-bold">80.0%</span>
+                      <span className="text-sm font-medium">Total Failure Events</span>
+                      <span className="text-sm font-bold">280</span>
                     </div>
                   </CardContent>
                 </Card>
