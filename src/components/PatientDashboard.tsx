@@ -354,6 +354,37 @@ const PatientDashboard = () => {
                         The edited values do not match the criteria text file
                       </p>
                     </div>
+                    
+                    <div className="mt-6">
+                      <h3 className="text-lg font-semibold mb-4">Criteria Comparison</h3>
+                      <div className="overflow-x-auto">
+                        <table className="w-full border border-border rounded-lg">
+                          <thead>
+                            <tr className="border-b border-border bg-accent/50">
+                              <th className="text-left py-3 px-4 font-semibold">Criterion Name</th>
+                              <th className="text-left py-3 px-4 font-semibold">Original Criteria Expected Value</th>
+                              <th className="text-left py-3 px-4 font-semibold">Edited Criteria Expected Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(originalCriteria).map(([criterionName, originalData], index) => {
+                              const editedData = editedCriteria[criterionName];
+                              const originalValue = formatCriteriaValue(criterionName, originalData);
+                              const editedValue = formatCriteriaValue(criterionName, editedData);
+                              const isDifferent = originalValue !== editedValue;
+                              
+                              return isDifferent ? (
+                                <tr key={index} className="border-b border-border/50 bg-destructive/10">
+                                  <td className="py-3 px-4 font-medium">{criterionName}</td>
+                                  <td className="py-3 px-4">{originalValue}</td>
+                                  <td className="py-3 px-4 text-destructive font-medium">{editedValue}</td>
+                                </tr>
+                              ) : null;
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               )}
