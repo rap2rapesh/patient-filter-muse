@@ -593,7 +593,18 @@ const PatientDashboard = () => {
                             <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
                               <td className="py-4 px-4 font-medium">{terminalCase.patientId}</td>
                               <td className="py-4 px-4 font-bold">{terminalCase.failedCount}</td>
-                              <td className="py-4 px-4 text-sm">{terminalCase.criteriaFailed}</td>
+                              <td className="py-4 px-4">
+                                <div className="flex flex-wrap gap-2">
+                                  {terminalCase.criteriaFailed.split(', ').map((criterion, idx) => (
+                                    <div 
+                                      key={idx}
+                                      className="px-3 py-1 bg-muted/50 border border-muted-foreground/20 rounded-full text-sm font-medium"
+                                    >
+                                      {criterion}
+                                    </div>
+                                  ))}
+                                </div>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
