@@ -155,11 +155,11 @@ const PatientDashboard = () => {
   ];
 
   const mockTerminalCases = [
-    { patientId: 'P13', failedCount: 4 },
-    { patientId: 'P15', failedCount: 4 },
-    { patientId: 'P16', failedCount: 3 },
-    { patientId: 'P22', failedCount: 3 },
-    { patientId: 'P08', failedCount: 2 },
+    { patientId: 'P13', failedCount: 4, criteriaFailed: 'BMI <= 35, Age > 75, HbA1c > 8.5, Liver_Function_ALT_AST < 40' },
+    { patientId: 'P15', failedCount: 4, criteriaFailed: 'BMI <= 35, BMI < 28, HbA1c > 8.5, Liver_Function_ALT_AST < 40' },
+    { patientId: 'P16', failedCount: 3, criteriaFailed: 'BMI <= 35, Age > 75, HbA1c > 8.5' },
+    { patientId: 'P22', failedCount: 3, criteriaFailed: 'Age > 75, Liver_Function_ALT_AST < 40, BMI < 28' },
+    { patientId: 'P08', failedCount: 2, criteriaFailed: 'BMI <= 35, HbA1c > 8.5' },
   ];
 
   const getFailureRowColor = (count: number) => {
@@ -585,6 +585,7 @@ const PatientDashboard = () => {
                           <tr className="border-b border-border">
                             <th className="text-left py-4 px-4 font-semibold">Patient ID</th>
                             <th className="text-left py-4 px-4 font-semibold">Count of criteria failed</th>
+                            <th className="text-left py-4 px-4 font-semibold">Criteria Failed</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -592,6 +593,7 @@ const PatientDashboard = () => {
                             <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
                               <td className="py-4 px-4 font-medium">{terminalCase.patientId}</td>
                               <td className="py-4 px-4 font-bold">{terminalCase.failedCount}</td>
+                              <td className="py-4 px-4 text-sm">{terminalCase.criteriaFailed}</td>
                             </tr>
                           ))}
                         </tbody>
