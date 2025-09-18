@@ -496,17 +496,44 @@ const PatientDashboard = () => {
                     <CardTitle className="text-xl">Failure Summary Preview</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center p-3 bg-accent/30 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-accent/30 rounded-lg mb-4">
                       <span className="text-sm font-medium">Most Failed Condition</span>
                       <span className="text-sm font-bold">BMI ≤ 35</span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-accent/30 rounded-lg">
-                      <span className="text-sm font-medium">Worst Terminal Case</span>
-                      <span className="text-sm font-bold">P13 (4 failures)</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-accent/30 rounded-lg">
-                      <span className="text-sm font-medium">Total Failure Events</span>
-                      <span className="text-sm font-bold">280</span>
+                    
+                    {/* Bar chart for failed conditions */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-muted-foreground mb-3">Failed Conditions Distribution</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground w-24">BMI ≤ 35</span>
+                          <div className="flex-1 mx-2">
+                            <div className="h-4 bg-red-500 rounded" style={{width: '100%'}}></div>
+                          </div>
+                          <span className="text-xs font-medium w-8">200</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground w-24">Liver ALT</span>
+                          <div className="flex-1 mx-2">
+                            <div className="h-4 bg-orange-500 rounded" style={{width: '15%'}}></div>
+                          </div>
+                          <span className="text-xs font-medium w-8">30</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground w-24">Age &gt; 75</span>
+                          <div className="flex-1 mx-2">
+                            <div className="h-4 bg-orange-400 rounded" style={{width: '12.5%'}}></div>
+                          </div>
+                          <span className="text-xs font-medium w-8">25</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground w-24">HbA1c</span>
+                          <div className="flex-1 mx-2">
+                            <div className="h-4 bg-yellow-500 rounded" style={{width: '7.5%'}}></div>
+                          </div>
+                          <span className="text-xs font-medium w-8">15</span>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -530,7 +557,6 @@ const PatientDashboard = () => {
                           <th className="text-left py-4 px-4 font-semibold">Name</th>
                           <th className="text-left py-4 px-4 font-semibold">Age</th>
                           <th className="text-left py-4 px-4 font-semibold">Diagnosis</th>
-                          <th className="text-left py-4 px-4 font-semibold">Eligibility Reason</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -539,7 +565,6 @@ const PatientDashboard = () => {
                             <td className="py-4 px-4">{patient.name}</td>
                             <td className="py-4 px-4">{patient.age}</td>
                             <td className="py-4 px-4">{patient.diagnosis}</td>
-                            <td className="py-4 px-4 text-sm text-muted-foreground">{patient.reason}</td>
                           </tr>)}
                       </tbody>
                     </table>
