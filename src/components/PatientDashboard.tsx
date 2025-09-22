@@ -13,7 +13,7 @@ interface CriteriaData {
 }
 
 const PatientDashboard = () => {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('start');
+  const [currentScreen, setCurrentScreen] = useState<Screen>('upload-csv');
   const [csvUploaded, setCsvUploaded] = useState(false);
   const [criteriaUploaded, setCriteriaUploaded] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -90,43 +90,43 @@ const PatientDashboard = () => {
     name: 'John Smith',
     age: 65,
     diagnosis: 'Hypertension',
-    reason: 'Age > 60, Diagnosis match'
+    gender: 'M'
   }, {
     id: 'P002',
     name: 'Sarah Johnson',
     age: 72,
     diagnosis: 'Diabetes',
-    reason: 'Age > 60, Medication: Aspirin'
+    gender: 'F'
   }, {
     id: 'P003',
     name: 'Michael Brown',
     age: 58,
     diagnosis: 'Hypertension',
-    reason: 'Diagnosis match, Medication: Aspirin'
+    gender: 'M'
   }, {
     id: 'P004',
     name: 'Emily Davis',
     age: 67,
     diagnosis: 'Hypertension',
-    reason: 'Age > 60, Diagnosis match'
+    gender: 'F'
   }, {
     id: 'P005',
     name: 'Robert Wilson',
     age: 74,
     diagnosis: 'Diabetes',
-    reason: 'Age > 60, Medication: Aspirin'
+    gender: 'M'
   }, {
     id: 'P006',
     name: 'Lisa Anderson',
     age: 63,
     diagnosis: 'Hypertension',
-    reason: 'Age > 60, Diagnosis match'
+    gender: 'F'
   }, {
     id: 'P007',
     name: 'David Miller',
     age: 69,
     diagnosis: 'Diabetes',
-    reason: 'Age > 60, Medication: Aspirin'
+    gender: 'M'
   }];
 
   const mockCriteria = [{
@@ -171,33 +171,11 @@ const PatientDashboard = () => {
   };
   const renderScreen = () => {
     switch (currentScreen) {
-      case 'start':
-        return <div className="min-h-screen bg-gradient-to-br from-background to-secondary flex items-center justify-center p-8">
-            <Card className="w-full max-w-2xl shadow-2xl border-0 bg-card/95 backdrop-blur">
-              <CardHeader className="text-center pb-8">
-                <div className="mx-auto mb-6 w-20 h-20 bg-gradient-to-br from-primary to-primary-hover rounded-2xl flex items-center justify-center">
-                  <Database className="w-10 h-10 text-primary-foreground" />
-                </div>
-                <h1 className="text-2xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
-                <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
-                  GenAI Tool
-                </CardTitle>
-                <p className="text-xl text-muted-foreground leading-relaxed">Upload the data file (.csv) and criteria file (.txt)</p>
-              </CardHeader>
-              <CardContent className="text-center">
-                <Button onClick={() => navigateToScreen('upload-csv')} size="lg" className="px-12 py-6 text-lg font-semibold bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                  Get Started
-                  <ArrowRight className="ml-3 w-5 h-5" />
-                </Button>
-              </CardContent>
-            </Card>
-          </div>;
       case 'upload-csv':
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
-                <h2 className="text-3xl font-bold text-foreground mb-2">Step 1: Upload Patient Data</h2>
+                <h1 className="text-xl font-bold text-foreground mb-2">Upload Patient Data</h1>
                 <p className="text-muted-foreground">Please upload your patient data as a .CSV file to begin the filtering process.</p>
               </div>
               
@@ -218,11 +196,7 @@ const PatientDashboard = () => {
                       </p>
                     </div>
 
-                    <div className="flex justify-between">
-                      <Button variant="outline" onClick={() => navigateToScreen('start')} className="px-8">
-                        <ArrowLeft className="mr-2 w-4 h-4" />
-                        Back to Landing Page
-                      </Button>
+                    <div className="flex justify-end">
                       <Button onClick={() => navigateToScreen('upload-criteria')} disabled={!csvUploaded} className="px-8">
                         Next
                         <ArrowRight className="ml-2 w-4 h-4" />
@@ -237,8 +211,7 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
-                <h2 className="text-3xl font-bold text-foreground mb-2">Step 2: Upload Eligibility Criteria</h2>
+                <h1 className="text-xl font-bold text-foreground mb-2">Upload Eligibility Criteria</h1>
                 <p className="text-muted-foreground">Please upload your eligibility criteria as a .TXT file to define patient eligibility.</p>
               </div>
               
@@ -278,8 +251,7 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-6xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
-                <h2 className="text-3xl font-bold text-foreground mb-2">Step 3: Review Extracted Criteria</h2>
+                <h1 className="text-xl font-bold text-foreground mb-2">Review Extracted Criteria</h1>
                 <p className="text-muted-foreground">Please review the extracted criteria below. Confirm if they are correct.</p>
               </div>
               
@@ -430,9 +402,7 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-7xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-xl font-bold mb-4 text-foreground">Patient Enrollment and Eligibility Screening</h1>
-                <h2 className="text-4xl font-bold text-foreground mb-2">Patient Eligibility Dashboard</h2>
-                <p className="text-muted-foreground text-lg">Comprehensive overview of patient filtering results</p>
+                <h1 className="text-xl font-bold text-foreground mb-2">Patient Eligibility Dashboard</h1>
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -554,7 +524,7 @@ const PatientDashboard = () => {
                       <thead className="sticky top-0 bg-background">
                         <tr className="border-b border-border">
                           <th className="text-left py-4 px-4 font-semibold">Patient ID</th>
-                          <th className="text-left py-4 px-4 font-semibold">Name</th>
+                          <th className="text-left py-4 px-4 font-semibold">Gender</th>
                           <th className="text-left py-4 px-4 font-semibold">Age</th>
                           <th className="text-left py-4 px-4 font-semibold">Diagnosis</th>
                         </tr>
@@ -562,7 +532,7 @@ const PatientDashboard = () => {
                       <tbody>
                         {mockPatients.map((patient, index) => <tr key={index} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
                             <td className="py-4 px-4 font-medium">{patient.id}</td>
-                            <td className="py-4 px-4">{patient.name}</td>
+                            <td className="py-4 px-4">{patient.gender}</td>
                             <td className="py-4 px-4">{patient.age}</td>
                             <td className="py-4 px-4">{patient.diagnosis}</td>
                           </tr>)}
