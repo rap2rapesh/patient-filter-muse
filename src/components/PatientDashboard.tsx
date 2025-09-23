@@ -61,13 +61,12 @@ const PatientDashboard = () => {
             [field]: 0
           };
         } else {
-          const numValue = parseFloat(value);
-          if (!isNaN(numValue)) {
-            newCriteria[criterionName] = {
-              ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
-              [field]: numValue
-            };
-          }
+          // Allow any string input including partial decimals like "4."
+          // This preserves the user's typing state while allowing floats
+          newCriteria[criterionName] = {
+            ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
+            [field]: value
+          };
         }
       }
       return newCriteria;
