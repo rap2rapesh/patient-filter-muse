@@ -54,23 +54,21 @@ const PatientDashboard = () => {
       if (field === 'value') {
         newCriteria[criterionName] = value;
       } else {
-        // Allow empty string and handle numeric conversion
-        if (value === '') {
-          newCriteria[criterionName] = {
-            ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
-            [field]: 0
-          };
-        } else {
-          // Allow any string input including partial decimals like "4."
-          // This preserves the user's typing state while allowing floats
-          newCriteria[criterionName] = {
-            ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
-            [field]: value
-          };
-        }
+        // Allow any string input including partial decimals and empty strings
+        newCriteria[criterionName] = {
+          ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
+          [field]: value
+        };
       }
       return newCriteria;
     });
+  };
+
+  const handleInputBlur = (criterionName: string, field: 'Min' | 'Max', value: string) => {
+    // Convert empty string to 0 only on blur (when user finishes editing)
+    if (value === '') {
+      updateCriteriaValue(criterionName, field, '0');
+    }
   };
 
   const checkIfCriteriaChanged = (): boolean => {
@@ -289,28 +287,30 @@ const PatientDashboard = () => {
                                   />
                                 ) : (
                                   <div className="flex items-center space-x-2">
-                                    {(criterionData.Min !== undefined || (typeof criterionData === 'object' && 'Min' in criterionData)) && (
-                                      <>
-                                        <span>Min:</span>
-                                        <Input
-                                          type="text"
-                                          value={criterionData.Min ?? 0}
-                                          onChange={(e) => updateCriteriaValue(criterionName, 'Min', e.target.value)}
-                                          className="w-20"
-                                        />
-                                      </>
-                                    )}
-                                    {(criterionData.Max !== undefined || (typeof criterionData === 'object' && 'Max' in criterionData)) && (
-                                      <>
-                                        <span>Max:</span>
-                                        <Input
-                                          type="text"
-                                          value={criterionData.Max ?? 0}
-                                          onChange={(e) => updateCriteriaValue(criterionName, 'Max', e.target.value)}
-                                          className="w-20"
-                                        />
-                                      </>
-                                    )}
+                                     {(criterionData.Min !== undefined || (typeof criterionData === 'object' && 'Min' in criterionData)) && (
+                                       <>
+                                         <span>Min:</span>
+                                         <Input
+                                           type="text"
+                                           value={criterionData.Min ?? ''}
+                                           onChange={(e) => updateCriteriaValue(criterionName, 'Min', e.target.value)}
+                                           onBlur={(e) => handleInputBlur(criterionName, 'Min', e.target.value)}
+                                           className="w-20"
+                                         />
+                                       </>
+                                     )}
+                                     {(criterionData.Max !== undefined || (typeof criterionData === 'object' && 'Max' in criterionData)) && (
+                                       <>
+                                         <span>Max:</span>
+                                         <Input
+                                           type="text"
+                                           value={criterionData.Max ?? ''}
+                                           onChange={(e) => updateCriteriaValue(criterionName, 'Max', e.target.value)}
+                                           onBlur={(e) => handleInputBlur(criterionName, 'Max', e.target.value)}
+                                           className="w-20"
+                                         />
+                                       </>
+                                     )}
                                   </div>
                                 )}
                               </td>
