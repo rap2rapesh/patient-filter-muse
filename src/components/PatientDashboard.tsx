@@ -54,12 +54,20 @@ const PatientDashboard = () => {
       if (field === 'value') {
         newCriteria[criterionName] = value;
       } else {
-        const numValue = parseFloat(value);
-        if (!isNaN(numValue)) {
+        // Allow empty string and handle numeric conversion
+        if (value === '') {
           newCriteria[criterionName] = {
             ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
-            [field]: numValue
+            [field]: undefined
           };
+        } else {
+          const numValue = parseFloat(value);
+          if (!isNaN(numValue)) {
+            newCriteria[criterionName] = {
+              ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
+              [field]: numValue
+            };
+          }
         }
       }
       return newCriteria;
@@ -339,15 +347,51 @@ const PatientDashboard = () => {
                           <tbody>
                             {Object.entries(originalCriteria).map(([criterionName, originalData], index) => {
                               const editedData = editedCriteria[criterionName];
-                              const originalValue = formatCriteriaValue(criterionName, originalData);
-                              const editedValue = formatCriteriaValue(criterionName, editedData);
-                              const isDifferent = originalValue !== editedValue;
                               
-                              return isDifferent ? (
+                              // Check for changes and get only changed parts
+                              const getChangedParts = () => {
+                                if (typeof originalData === 'string') {
+                                  if (originalData !== editedData) {
+                                    return {
+                                      original: originalData,
+                                      edited: editedData as string
+                                    };
+                                  }
+                                  return null;
+                                }
+                                
+                                const changes: { original: string[], edited: string[] } = { original: [], edited: [] };
+                                let hasChanges = false;
+                                
+                                if (originalData.Min !== undefined && editedData && typeof editedData === 'object') {
+                                  if (originalData.Min !== (editedData as any).Min) {
+                                    changes.original.push(`Min: ${originalData.Min}`);
+                                    changes.edited.push(`Min: ${(editedData as any).Min}`);
+                                    hasChanges = true;
+                                  }
+                                }
+                                
+                                if (originalData.Max !== undefined && editedData && typeof editedData === 'object') {
+                                  if (originalData.Max !== (editedData as any).Max) {
+                                    changes.original.push(`Max: ${originalData.Max}`);
+                                    changes.edited.push(`Max: ${(editedData as any).Max}`);
+                                    hasChanges = true;
+                                  }
+                                }
+                                
+                                return hasChanges ? {
+                                  original: changes.original.join(', '),
+                                  edited: changes.edited.join(', ')
+                                } : null;
+                              };
+                              
+                              const changedParts = getChangedParts();
+                              
+                              return changedParts ? (
                                 <tr key={index} className="border-b border-border/50 bg-destructive/10">
                                   <td className="py-3 px-4 font-medium">{criterionName}</td>
-                                  <td className="py-3 px-4">{originalValue}</td>
-                                  <td className="py-3 px-4 text-destructive font-medium">{editedValue}</td>
+                                  <td className="py-3 px-4">{changedParts.original}</td>
+                                  <td className="py-3 px-4 text-destructive font-medium">{changedParts.edited}</td>
                                 </tr>
                               ) : null;
                             })}
