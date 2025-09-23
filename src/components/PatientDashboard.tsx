@@ -58,7 +58,7 @@ const PatientDashboard = () => {
         if (value === '') {
           newCriteria[criterionName] = {
             ...(typeof newCriteria[criterionName] === 'object' ? newCriteria[criterionName] as any : {}),
-            [field]: undefined
+            [field]: 0
           };
         } else {
           const numValue = parseFloat(value);
@@ -290,23 +290,23 @@ const PatientDashboard = () => {
                                   />
                                 ) : (
                                   <div className="flex items-center space-x-2">
-                                    {criterionData.Min !== undefined && (
+                                    {(criterionData.Min !== undefined || (typeof criterionData === 'object' && 'Min' in criterionData)) && (
                                       <>
                                         <span>Min:</span>
                                         <Input
                                           type="text"
-                                          value={criterionData.Min}
+                                          value={criterionData.Min ?? 0}
                                           onChange={(e) => updateCriteriaValue(criterionName, 'Min', e.target.value)}
                                           className="w-20"
                                         />
                                       </>
                                     )}
-                                    {criterionData.Max !== undefined && (
+                                    {(criterionData.Max !== undefined || (typeof criterionData === 'object' && 'Max' in criterionData)) && (
                                       <>
                                         <span>Max:</span>
                                         <Input
                                           type="text"
-                                          value={criterionData.Max}
+                                          value={criterionData.Max ?? 0}
                                           onChange={(e) => updateCriteriaValue(criterionName, 'Max', e.target.value)}
                                           className="w-20"
                                         />
