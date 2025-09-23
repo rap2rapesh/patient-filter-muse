@@ -211,8 +211,8 @@ const PatientDashboard = () => {
         return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-xl font-bold text-foreground mb-2">Upload Eligibility Criteria</h1>
-                <p className="text-muted-foreground">Please upload your eligibility criteria as a .TXT file to define patient eligibility.</p>
+                <h1 className="text-xl font-bold text-foreground mb-2">Upload Protocol Document</h1>
+                <p className="text-muted-foreground">Please upload your protocol document as a .pdf file.</p>
               </div>
               
               <Card className="shadow-xl border-0">
@@ -225,10 +225,10 @@ const PatientDashboard = () => {
                     <div className="mb-8 p-8 border-2 border-dashed border-border rounded-xl bg-accent/30 hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => setCriteriaUploaded(true)}>
                       <Upload className="mx-auto w-8 h-8 text-muted-foreground mb-4" />
                       <Button variant="outline" size="lg" className="mb-4">
-                        Upload Criteria File
+                        Upload Protocol Document
                       </Button>
                       <p className="text-sm text-muted-foreground">
-                        {criteriaUploaded ? 'filtering_criteria.txt' : 'No file chosen'}
+                        {criteriaUploaded ? 'protocol document.pdf' : 'No file chosen'}
                       </p>
                     </div>
 
@@ -286,11 +286,10 @@ const PatientDashboard = () => {
                                       <>
                                         <span>Min:</span>
                                         <Input
-                                          type="number"
+                                          type="text"
                                           value={criterionData.Min}
                                           onChange={(e) => updateCriteriaValue(criterionName, 'Min', e.target.value)}
                                           className="w-20"
-                                          step="0.1"
                                         />
                                       </>
                                     )}
@@ -298,11 +297,10 @@ const PatientDashboard = () => {
                                       <>
                                         <span>Max:</span>
                                         <Input
-                                          type="number"
+                                          type="text"
                                           value={criterionData.Max}
                                           onChange={(e) => updateCriteriaValue(criterionName, 'Max', e.target.value)}
                                           className="w-20"
-                                          step="0.1"
                                         />
                                       </>
                                     )}
@@ -372,7 +370,7 @@ const PatientDashboard = () => {
                   {!showWarning && (
                     <Button variant="outline" onClick={() => navigateToScreen('upload-criteria')} className="px-8">
                       <ArrowLeft className="mr-2 w-4 h-4" />
-                      Back to Upload Eligibility Criteria
+                      Back to Upload Protocol Document
                     </Button>
                   )}
                 </div>
