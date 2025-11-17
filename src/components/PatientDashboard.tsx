@@ -3,7 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, ArrowRight, Upload, Check, Download, FileText, Database } from 'lucide-react';
-type Screen = 'start' | 'upload-csv' | 'upload-criteria' | 'review-criteria' | 'dashboard';
+import ageHistogram from '@/assets/age_histogram.png';
+import bmiHistogram from '@/assets/bmi_histogram.png';
+import diagnosisBarChart from '@/assets/diagnosis_bar_chart.png';
+import hba1cHistogram from '@/assets/hba1c_histogram.png';
+import liverAltAstHistogram from '@/assets/liver_alt_ast_histogram.png';
+type Screen = 'start' | 'upload-csv' | 'upload-criteria' | 'review-criteria' | 'dashboard' | 'feature-distribution';
 
 interface CriteriaData {
   [key: string]: {
@@ -258,6 +263,10 @@ const PatientDashboard = () => {
               <div className="mb-8">
                 <h1 className="text-xl font-bold text-foreground mb-2">Review Extracted Criteria</h1>
                 <p className="text-muted-foreground">Please review the extracted criteria below. Confirm if they are correct.</p>
+                <p className="text-muted-foreground mt-4">
+                  <strong>AI transforms plain-language criteria from the protocol document into structured numerical constraints:</strong><br />
+                  <strong>Example: "BMI between 28 and 35" which means that BMI value must fall within the range [28, 35] which means Minimum value - 28, Maximum value - 35.</strong>
+                </p>
               </div>
               
               {!showWarning && (
@@ -657,6 +666,118 @@ const PatientDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Next button to Feature Distribution */}
+              <div className="flex justify-end mt-8">
+                <Button onClick={() => navigateToScreen('feature-distribution')} size="lg" className="px-8">
+                  Next
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>;
+      case 'feature-distribution':
+        return <div className="min-h-screen bg-gradient-to-br from-background to-secondary p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-8">
+                <h1 className="text-xl font-bold text-foreground mb-2">Feature Distribution for Criteria</h1>
+              </div>
+
+              {/* Explanation Section */}
+              <Card className="shadow-xl border-0 mb-8">
+                <CardContent className="p-6">
+                  <div className="space-y-4 text-foreground">
+                    <p>
+                      <strong>1) Histogram chart: Feature(units) on the X-axis and Number of patients(count) on the Y-axis.</strong><br />
+                      <strong>NOTE: The 'Diagnosis Distribution' chart is a bar chart consisting of feature values that follow the inclusion criteria and the values that follow the exclusion criteria.</strong>
+                    </p>
+                    <p>
+                      <strong>2) Two ranges:</strong><br />
+                      <strong>2.1) Inclusion range: The specific range of values that a feature's measurement must fall within so that the patient is included as defined in the protocol document.</strong><br />
+                      <strong>2.2) Exclusion range: The specific range of values that a feature's measurement must fall within so that the patient is excluded as defined in the protocol document.</strong>
+                    </p>
+                    <p>
+                      <strong>3) Color Key:</strong><br />
+                      <strong>3.1) Inclusion range: Green color</strong><br />
+                      <strong>3.2) Exclusion range: Red color</strong>
+                    </p>
+                    <p>
+                      <strong>4) Bins: Each bin represents a specific range of a feature's values and includes the count of patients that fall within that range.</strong>
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Distribution Charts */}
+              <div className="space-y-8 mb-8">
+                {/* Age Distribution */}
+                <Card className="shadow-xl border-0">
+                  <CardHeader>
+                    <CardTitle className="text-xl text-center">Age Distribution for Criteria</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    <div className="w-3/4">
+                      <img src={ageHistogram} alt="Age Distribution" className="w-full h-auto" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* BMI Distribution */}
+                <Card className="shadow-xl border-0">
+                  <CardHeader>
+                    <CardTitle className="text-xl text-center">BMI Distribution for Criteria</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    <div className="w-3/4">
+                      <img src={bmiHistogram} alt="BMI Distribution" className="w-full h-auto" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Diagnosis Distribution */}
+                <Card className="shadow-xl border-0">
+                  <CardHeader>
+                    <CardTitle className="text-xl text-center">Diagnosis Distribution for Criteria</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    <div className="w-3/4">
+                      <img src={diagnosisBarChart} alt="Diagnosis Distribution" className="w-full h-auto" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* HbA1c Distribution */}
+                <Card className="shadow-xl border-0">
+                  <CardHeader>
+                    <CardTitle className="text-xl text-center">HbA1c Distribution for Criteria</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    <div className="w-3/4">
+                      <img src={hba1cHistogram} alt="HbA1c Distribution" className="w-full h-auto" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Liver ALT/AST Distribution */}
+                <Card className="shadow-xl border-0">
+                  <CardHeader>
+                    <CardTitle className="text-xl text-center">Liver ALT/AST Distribution for Criteria</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    <div className="w-3/4">
+                      <img src={liverAltAstHistogram} alt="Liver ALT/AST Distribution" className="w-full h-auto" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Back button */}
+              <div className="flex justify-start">
+                <Button variant="outline" onClick={() => navigateToScreen('dashboard')} className="px-8 bg-blue-600 hover:bg-blue-700 text-white">
+                  <ArrowLeft className="mr-2 w-4 h-4" />
+                  Back
+                </Button>
+              </div>
             </div>
           </div>;
       default:
