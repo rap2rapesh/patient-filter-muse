@@ -265,7 +265,7 @@ const PatientDashboard = () => {
                 <p className="text-muted-foreground">Please review the extracted criteria below. Confirm if they are correct.</p>
                 <p className="text-muted-foreground mt-4">
                   <strong>AI transforms plain-language criteria from the protocol document into structured numerical constraints:</strong><br />
-                  <strong>Example: "BMI between 28 and 35" which means that BMI value must fall within the range [28, 35] which means Minimum value - 28, Maximum value - 35.</strong>
+                  <strong>Example: "BMI between 28 and 35" which means that BMI value must fall within the range [28, 35] that is Minimum value-28, Maximum value-35.</strong>
                 </p>
               </div>
               
